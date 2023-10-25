@@ -1,6 +1,15 @@
 # Rocket App with SurrealDB: TODO App
 
-![Run Dev](./.github/todo.png)
+The project aims to build a basic web application using the Rocket framework, providing the following features:
+
+
+- [x] Create and manage a list of tasks.
+- [ ] Mark tasks as completed.
+- [x] Delete tasks.
+- [x] Persist data using SurrealDB as the database backend.
+
+
+   ![Run Dev](./.github/todo.png)
 
 ## Requirements
 
@@ -27,3 +36,11 @@
    cargo run
    ```
    ![Rocket](./.github/rocket.png)
+
+
+## Usage
+
+- Visit http://localhost:8000 to use the application.
+- Add new tasks and mark them as completed.
+- Delete tasks as needed.
+- The data is persisted using SurrealDB.
