@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .todo-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin: 5px 0;
+        background-color: #fff;
+        border-radius: 4px;
+      }
+      .reorder-icon {
+        color: #ccc;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+      .completed {
+        text-decoration: line-through;
+      }
+    </style>
+    <title>Todo App</title>
+  </head>
+  <body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+      <h1 class="text-3xl font-semibold mb-4">Todo App</h1>
+
+      <!-- Todo Input Form -->
+      <div class="flex mb-4">
+        <input
+          type="text"
+          id="todo-input"
+          class="w-full p-2 rounded-l border"
+          placeholder="Add a new todo"
+        />
+        <button id="add-todo" class="bg-blue-500 text-white p-2 rounded-r">
+          Add
+        </button>
+      </div>
+
+      <!-- Todo List -->
+      <ul id="todo-list" class="bg-white p-2 rounded-lg shadow">
+       
+      </ul>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const todoInput = document.getElementById("todo-input");
+        const addTodoButton = document.getElementById("add-todo");
+        const todoList = document.getElementById("todo-list");
+        // Function to fetch and display todos
+        function fetchAndDisplayTodos() {
+          fetch("http://localhost:8000/api/tasks")
+            .then((response) => response.json())
+            .then((todos) => {
+              // Clear the existing todo list
+              todoList.innerHTML = "";
+              // Render each todo
+              todos.result.forEach((todo) => {
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `
+                                <span class="reorder-icon"><i class="fas fa-grip-vertical"></i></span>
+                                <span class="${
+                                  todo.completed ? "completed" : ""
+                                }">${todo.description}</span>
+                                <button class="text-red-500 delete-todo" data-id="${
+                                  todo.id.id.String
+                                }"><i class="fas fa-trash"></i></button>
+                            `;
+                listItem.className = "todo-item";
+                todoList.appendChild(listItem);
+              });
+            });
+        }
+
+        // Initial fetch to populate the todo list
+        fetchAndDisplayTodos();
+
+        // Event listener for adding a new todo
+        addTodoButton.addEventListener("click", function () {
+          const newTodo = todoInput.value;
+
+          fetch("http://localhost:8000/api/tasks", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ description: newTodo, completed: false }),
+          }).then(() => {
+            todoInput.value = ""; // Clear the input field
+            fetchAndDisplayTodos(); // Fetch and display the updated todo list
+          });
+        });
+
+        // Event delegation for deleting a todo
+        todoList.addEventListener("click", function (event) {
+          const deleteButton = event.target.closest(".delete-todo");
+          if (deleteButton) {
+            const todoId = deleteButton.getAttribute("data-id");
+            fetch(`http://localhost:8000/api/tasks/delete/${todoId}`, {
+              method: "POST",
+            }).then(() => fetchAndDisplayTodos()); // Fetch and display the updated todo list
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
