@@ -22,7 +22,7 @@ The project aims to build a basic web application using the Rocket framework, pr
 
 1. **Clone the Repository**: Clone the repository to your local machine.
 
-2. **Start SurrealDB:
+2. **Start SurrealDB**:
 
    ```bash
    surreal start memory -A --auth --user root --pass root --bind 0.0.0.0:8001
